@@ -1,0 +1,13 @@
+.element-liste {
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* Poravnava stavke po sredini vertikalno */
+}
+
+.element-liste span {
+    margin-right: auto; /* Stavlja span na početak reda */
+}
+
+.edit-dugme{
+    margin-right: 1%;
+}

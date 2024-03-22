@@ -5,10 +5,10 @@
 <ul class="list-group list-group-flush" id="notes">
   {% for note in user.notes %}
   <li class="list-group-item">
-    <div>
+    <div class="element-liste">
       <span>{{ note.data }}</span>
-      <button type="button" class="btn btn-sm btn-primary edit-btn" data-toggle="modal" data-target="#editModal" data-noteid="{{ note.id }}">Edit</button>
-      <button type="button" class="close" aria-label="Close" onClick="deleteNote('{{ note.id }}')">
+      <button type="button" class="btn btn-sm btn-primary edit-btn edit-dugme"  data-toggle="modal" data-target="#editModal" data-noteid="{{ note.id }}">Edit</button>
+      <button type="button" class="close delete-dugme" aria-label="Close" onClick="deleteNote('{{ note.id }}')">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
@@ -44,5 +44,4 @@
     <button type="submit" class="btn btn-primary">Add Note</button>
   </div>
 </form>
-<script src="{{ url_for('static', filename='index.js') }}"></script>
 {% endblock %}

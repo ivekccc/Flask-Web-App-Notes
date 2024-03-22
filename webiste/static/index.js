@@ -16,7 +16,6 @@ function deleteNote(noteId) {
     });
 
     $('#saveChangesBtn').click(function() {
-      console.log("jes")
       var noteId = $('#editModal').data('noteid');
       var newContent = $('#editNoteContent').val();
       $.ajax({
