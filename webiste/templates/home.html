@@ -1,16 +1,42 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
-%}
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
 <h1 align="center">Notes</h1>
 <ul class="list-group list-group-flush" id="notes">
   {% for note in user.notes %}
   <li class="list-group-item">
-    {{ note.data }}
-    <button type="button" class="close" onClick="deleteNote('{{ note.id }}')">
-      <span aria-hidden="true">&times;</span>
-    </button>
+    <div>
+      <span>{{ note.data }}</span>
+      <button type="button" class="btn btn-sm btn-primary edit-btn" data-toggle="modal" data-target="#editModal" data-noteid="{{ note.id }}">Edit</button>
+      <button type="button" class="close" aria-label="Close" onClick="deleteNote('{{ note.id }}')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
   </li>
   {% endfor %}
 </ul>
+
+<!-- Edit Note Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Edit Note</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <textarea id="editNoteContent" class="form-control"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="saveChangesBtn">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <form method="POST">
   <textarea name="note" id="note" class="form-control"></textarea>
   <br />
@@ -18,4 +44,5 @@
     <button type="submit" class="btn btn-primary">Add Note</button>
   </div>
 </form>
+<script src="{{ url_for('static', filename='index.js') }}"></script>
 {% endblock %}
