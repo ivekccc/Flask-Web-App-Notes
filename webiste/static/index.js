@@ -11,68 +11,65 @@ function deleteNote(noteId) {
     $('.edit-btn').click(function() {
       var noteId = $(this).data('noteid');
       var noteContent = $(this).siblings('span').text();
+
+      // AJAX poziv za dobijanje statusa isDone atributa
+      $.ajax({
+        type: 'POST',
+        url: '/get-note-status',
+        contentType: 'application/json',
+        data: JSON.stringify({ noteId: noteId }),
+        success: function(response) {
+          var isDone = response.isDone; // Dobijena vrednost isDone atributa
+          $('#editIsDone').prop('checked', isDone); // Postavljanje vrednosti checkbox-a
+        },
+        error: function(error) {
+          alert(error.responseJSON.error);
+        }
+      });
+
+      // AJAX poziv za dobijanje kategorije beleške
+      $.ajax({
+        type: 'POST',
+        url: '/get-category', // Ispravljeno ime rute
+        contentType: 'application/json',
+        data: JSON.stringify({ noteId: noteId }),
+        success: function(response) {
+          var categoryId = response.categoryId; // Dobijena vrednost categoryId
+          $('#editCategory').val(categoryId); // Postavljanje vrednosti u padajući meni
+        },
+        error: function(error) {
+          alert(error.responseJSON.error);
+        }
+      });
+
+      var isDone = $(this).siblings('.element-liste').find('.form-check-input').prop('checked');
       $('#editModal').data('noteid', noteId);
       $('#editNoteContent').val(noteContent);
+      $('#editIsDone').prop('checked', isDone);
     });
 
     $('#saveChangesBtn').click(function() {
       var noteId = $('#editModal').data('noteid');
       var newContent = $('#editNoteContent').val();
+      var categoryId = $('#editCategory').val(); // Dobijanje vrednosti kategorije
+      var isDone = $('#editIsDone').prop('checked');
       $.ajax({
         type: 'POST',
         url: '/edit-note',
         contentType: 'application/json',
-        data: JSON.stringify({ noteId: noteId, newContent: newContent }),
+        data: JSON.stringify({ noteId: noteId, newContent: newContent, categoryId: categoryId, isDone: isDone }),
         success: function(response) {
           alert(response.message);
           $('#editModal').modal('hide');
-          location.reload();  // Reload the page to reflect changes
+          location.reload();
         },
         error: function(error) {
           alert(error.responseJSON.error);
         }
       });
     });
-});
-
-document.getElementById('addNoteBtn').addEventListener('click', function() {
-  var noteContent = document.getElementById('note').value;
-  var category = document.getElementById('category').value;
-  var data = {
-    note: noteContent,
-    category: category
-  };
-
-  fetch('/add-note', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log(data.message); // Handle response from the server
-    if (data.message === 'Note added successfully') {
-      // Zatvori modal
-      $('#addNoteModal').modal('hide');
-
-      // Resetuj formu
-      document.getElementById('note').value = '';
-      document.getElementById('category').value = '';
-
-      // Dodaj novu belešku na listu
-      var notesList = document.getElementById('notes');
-      var newNoteItem = document.createElement('li');
-      newNoteItem.className = 'list-group-item';
-      newNoteItem.innerHTML = '<div class="element-liste"><span>' + noteContent + '</span><button type="button" class="btn btn-sm btn-primary edit-btn edit-dugme"  data-toggle="modal" data-target="#editModal" data-noteid="' + data.note_id + '">Edit</button><button type="button" class="close delete-dugme" aria-label="Close" onClick="deleteNote(\'' + data.note_id + '\')"><span aria-hidden="true">&times;</span></button></div>';
-      notesList.appendChild(newNoteItem);
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
   });
-});
+
 
 
 
