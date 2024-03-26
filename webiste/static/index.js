@@ -26,12 +26,53 @@ function deleteNote(noteId) {
         success: function(response) {
           alert(response.message);
           $('#editModal').modal('hide');
-          location.reload();
+          location.reload();  // Reload the page to reflect changes
         },
         error: function(error) {
           alert(error.responseJSON.error);
         }
       });
     });
+});
+
+document.getElementById('addNoteBtn').addEventListener('click', function() {
+  var noteContent = document.getElementById('note').value;
+  var category = document.getElementById('category').value;
+  var data = {
+    note: noteContent,
+    category: category
+  };
+
+  fetch('/add-note', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data.message); // Handle response from the server
+    if (data.message === 'Note added successfully') {
+      // Zatvori modal
+      $('#addNoteModal').modal('hide');
+
+      // Resetuj formu
+      document.getElementById('note').value = '';
+      document.getElementById('category').value = '';
+
+      // Dodaj novu belešku na listu
+      var notesList = document.getElementById('notes');
+      var newNoteItem = document.createElement('li');
+      newNoteItem.className = 'list-group-item';
+      newNoteItem.innerHTML = '<div class="element-liste"><span>' + noteContent + '</span><button type="button" class="btn btn-sm btn-primary edit-btn edit-dugme"  data-toggle="modal" data-target="#editModal" data-noteid="' + data.note_id + '">Edit</button><button type="button" class="close delete-dugme" aria-label="Close" onClick="deleteNote(\'' + data.note_id + '\')"><span aria-hidden="true">&times;</span></button></div>';
+      notesList.appendChild(newNoteItem);
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
   });
+});
+
+
 
