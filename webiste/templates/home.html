@@ -6,6 +6,15 @@
   {% for note in user.notes %}
   <li class="list-group-item">
     <div class="element-liste">
+      {% if note.category_id == 4%}
+      <img src="{{ url_for('static', filename='icons/job.png') }}" alt="JobIcon" class="category-icon">
+      {% elif note.category_id == 3 %}
+        <img src="{{ url_for('static', filename='icons/quality-of-life.png') }}" alt="LifeIcon" class="category-icon">
+      {% elif note.category_id == 2 %}
+        <img src="{{ url_for('static', filename='icons/top-secret.png') }}" alt="SecretIcon" class="category-icon">
+      {% elif note.category_id == 1 %}
+       <img src="{{ url_for('static', filename='icons/travel.png') }}" alt="TravelIcon" class="category-icon">
+        {% endif %}
       <span>{{ note.data }}</span>
       <button type="button" class="btn btn-sm btn-primary edit-btn edit-dugme"  data-toggle="modal" data-target="#editModal" data-noteid="{{ note.id }}">Edit</button>
       <button type="button" class="close delete-dugme" aria-label="Close" onClick="deleteNote('{{ note.id }}')">
@@ -15,6 +24,7 @@
   </li>
   {% endfor %}
 </ul>
+
 
 <!-- Edit Note Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
